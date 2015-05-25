@@ -8,6 +8,7 @@ var buttons = require('sdk/ui/button/action');
 var tabs = require('sdk/tabs');
 var panels = require('sdk/panel');
 var { MatchPattern } = require('sdk/util/match-pattern');
+var _ = require('sdk/l10n').get;
 var browserLanguage = require('sdk/preferences/service')
     .getLocalized('intl.accept_languages')
     .split(', ')
@@ -56,14 +57,13 @@ var checkList = {
 
 function tabReadyHandler(tab) {
     var url = tab.url;
-    var display = checkUrl(url);
+    var infos = checkUrl(url);
+    var payload = {
+        title: _('mainPanelTitle', infos.length),
+        infos: infos
+    };
 
-    if (display === false) {
-        mainButton.state('tab', {badge: null});
-        return;
-    }
-
-    updatePanel(display);
+    updatePanel(payload);
 }
 
 function buttonClickHandler(state) {
@@ -89,7 +89,7 @@ function getInfos(url) {
     var infos = {};
 
     if (rawInfos === undefined) {
-        return false;
+        return [];
     }
 
     infos.warning = rawInfos.warning[browserLanguage];
@@ -111,9 +111,14 @@ function getInfos(url) {
     return [infos];
 }
 
-function updatePanel(infos) {
-    mainButton.state('tab', {badge: 1});
-    mainPanel.port.emit('updateInfo', infos);
+function updatePanel(payload) {
+    mainButton.state(
+        'tab',
+        {
+            badge: (payload.infos.length > 0) ? payload.infos.length : null
+        }
+    );
+    mainPanel.port.emit('updateInfo', payload);
 }
 
 tabs.on('ready', tabReadyHandler);

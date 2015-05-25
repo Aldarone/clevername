@@ -4,13 +4,14 @@
 /* global self */
 
 self.port.on('updateInfo', function panelUpdateInfos(infosPayload){
+    var infos = infosPayload.infos;
     var warningList = document.getElementById('warningList');
 
-    document.getElementById("warningNumber").textContent = infosPayload.length + ' avertissements';
+    document.getElementById("mainTitle").textContent = infosPayload.title;
 
     warningList.innerHTML = '';
 
-    infosPayload.forEach(function(info){
+    infos.forEach(function(info){
         var listItem = document.createElement('li');
         var warningText = document.createElement('p');
         var warningPicture = document.createElement('img');
