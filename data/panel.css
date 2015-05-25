@@ -1,0 +1,21 @@
+img {
+    max-width: 100%;
+}
+
+.warningList {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.warningList li {
+    padding: 0;
+    margin: 0;
+}
+
+.warningPicture {
+    float: left;
+    margin: 0 0.5em 0.5em 0;
+    max-width: 25%;
+    max-height: 30px;
+}

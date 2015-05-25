@@ -6,6 +6,7 @@
 var self = require('sdk/self');
 var buttons = require('sdk/ui/button/action');
 var tabs = require('sdk/tabs');
+var panels = require('sdk/panel');
 var { MatchPattern } = require('sdk/util/match-pattern');
 var browserLanguage = require('sdk/preferences/service')
     .getLocalized('intl.accept_languages')
@@ -17,15 +18,25 @@ var mainButton = buttons.ActionButton({
     id: 'woa-mainButton',
     label: 'Web Of Awareness',
     icon: {
-        '16': './Spellbound/icon-0-16.png',
-        '32': './Spellbound/icon-0-32.png',
-        '64': './Spellbound/icon-0-64.png'
-    }
+        '16': self.data.url('Spellbound/icon-0-16.png'),
+        '32': self.data.url('Spellbound/icon-0-32.png'),
+        '64': self.data.url('Spellbound/icon-0-64.png')
+    },
+    badgeColor: '#000',
+    onClick: buttonClickHandler
+});
+
+var mainPanel = panels.Panel({
+    width: 300,
+    height: 400,
+    contentURL: self.data.url("panel.html"),
+    contentScriptFile: self.data.url('panel.js'),
+    contentStyleFile: self.data.url('panel.css')
 });
 
 var checkList = {
     "language": "fr",
-    "default-image": "./sample/trollface.png",
+    "default-image": self.data.url("sample/trollface.png"),
     "default-warning": {
         "fr": "Message d'alerte par défaut",
         "en": "Default warning message"
@@ -47,7 +58,16 @@ function tabReadyHandler(tab) {
     var url = tab.url;
     var display = checkUrl(url);
 
-    console.log(display);
+    if (display === false) {
+        mainButton.state('tab', {badge: null});
+        return;
+    }
+
+    updatePanel(display);
+}
+
+function buttonClickHandler(state) {
+    mainPanel.show({position: mainButton});
 }
 
 function checkUrl(url) {
@@ -64,7 +84,6 @@ function checkUrl(url) {
 }
 
 function getInfos(url) {
-    console.log(url, browserLanguage);
     var defaultLanguage = checkList.language;
     var rawInfos = checkList.urls[url];
     var infos = {};
@@ -89,7 +108,12 @@ function getInfos(url) {
         infos.image = checkList['default-image'];
     }
 
-    return infos;
+    return [infos];
+}
+
+function updatePanel(infos) {
+    mainButton.state('tab', {badge: 1});
+    mainPanel.port.emit('updateInfo', infos);
 }
 
 tabs.on('ready', tabReadyHandler);
