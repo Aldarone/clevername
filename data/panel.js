@@ -17,9 +17,11 @@ self.port.on('updateInfo', function panelUpdateInfos(infosPayload){
         var warningSources = document.createElement('ul');
 
         warningText.textContent = info.warning;
+        warningText.classList.add('title');
 
         warningPicture.src = info.image;
-        warningPicture.classList.add('warningPicture');
+        warningPicture.alt = info.warning;
+        warningPicture.classList.add('circle');
 
         info.sources.forEach(function(source){
             var sourceItem = document.createElement('li');
@@ -33,6 +35,8 @@ self.port.on('updateInfo', function panelUpdateInfos(infosPayload){
             warningSources.insertAdjacentHTML('beforeend', sourceItem.outerHTML);
         });
 
+        listItem.classList.add('collection-item');
+        listItem.classList.add('avatar');
         listItem.insertAdjacentHTML('beforeend', warningPicture.outerHTML);
         listItem.insertAdjacentHTML('beforeend', warningText.outerHTML);
         listItem.insertAdjacentHTML('beforeend', warningSources.outerHTML);

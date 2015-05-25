@@ -27,11 +27,11 @@ var mainButton = buttons.ActionButton({
 });
 
 var mainPanel = panels.Panel({
-    width: 300,
-    height: 400,
+    width: 500,
+    height: 282,
     contentURL: self.data.url("panel.html"),
     contentScriptFile: self.data.url('panel.js'),
-    contentStyleFile: self.data.url('panel.css')
+    contentStyleFile: [self.data.url('materialize.min.css'), self.data.url('panel.css')]
 });
 
 var checkList = {
